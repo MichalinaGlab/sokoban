@@ -12,10 +12,69 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     doKroczek()
 })
 function isSzklanakula () {
-	
+    if (tiles.tileAtLocationIsWall(nast1)) {
+        music.knock.play()
+        return false
+    } else if (isSkrzynia(nast1.row, nast1.column)) {
+        if (tiles.tileAtLocationIsWall(nast2) || isSkrzynia(nast2.row, nast2.column)) {
+            music.knock.play()
+            return false
+        }
+    } else {
+        return true
+    }
+    return true
+}
+function isSkrzynia (wiersz: number, kolumna: number) {
+    for (let value of sprites.allOfKind(SpriteKind.skrzynki)) {
+        if (value.tilemapLocation().column == kolumna && value.tilemapLocation().row == wiersz) {
+            return true
+        }
+    }
+    return false
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.skrzynki, function (sprite, otherSprite) {
-    otherSprite.x += 1
+    doMove(otherSprite)
+    if (otherSprite.tileKindAt(TileDirection.Center, sprites.castle.tileGrass2)) {
+        music.pewPew.play()
+        otherSprite.setImage(img`
+            . b b b b b b b b b b b b b b . 
+            b e 4 4 4 4 4 4 4 4 4 4 4 4 4 b 
+            b e 4 4 4 4 4 4 4 4 4 4 4 4 e b 
+            b e e 4 4 4 4 4 4 4 4 4 4 e e b 
+            b b b b b b b d d b b b b b b b 
+            . b b b b b b c c b b b b b b . 
+            b c c c c c b c c b c c c c c b 
+            b c c c c c c b b c c c c c c b 
+            b c c c c c c c c c c c c c c b 
+            b c c c c c c c c c c c c c c b 
+            b b b b b b b b b b b b b b b b 
+            b e e e e e e e e e e e e e e b 
+            b e e e e e e e e e e e e e e b 
+            b c e e e e e e e e e e e e c b 
+            b b b b b b b b b b b b b b b b 
+            . b b . . . . . . . . . . b b . 
+            `)
+    } else {
+        otherSprite.setImage(img`
+            . . b b b b b b b b b b b b . . 
+            . b e 4 4 4 4 4 4 4 4 4 4 e b . 
+            b e 4 4 4 4 4 4 4 4 4 4 4 4 e b 
+            b e 4 4 4 4 4 4 4 4 4 4 4 4 e b 
+            b e 4 4 4 4 4 4 4 4 4 4 4 4 e b 
+            b e e 4 4 4 4 4 4 4 4 4 4 e e b 
+            b e e e e e e e e e e e e e e b 
+            b e e e e e e e e e e e e e e b 
+            b b b b b b b d d b b b b b b b 
+            c b b b b b b c c b b b b b b c 
+            c c c c c c b c c b c c c c c c 
+            b e e e e e c b b c e e e e e b 
+            b e e e e e e e e e e e e e e b 
+            b c e e e e e e e e e e e e c b 
+            b b b b b b b b b b b b b b b b 
+            . b b . . . . . . . . . . b b . 
+            `)
+    }
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     nast1 = sokoban.tilemapLocation().getNeighboringLocation(CollisionDirection.Right)
@@ -23,12 +82,18 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     doKroczek()
 })
 function doKroczek () {
+    if (isSzklanakula()) {
+        doMove(sokoban)
+        info.changeScoreBy(1)
+    }
+}
+function doMove (mySprite: Sprite) {
     petla = 8
     dx = nast1.x - sokoban.tilemapLocation().x
     dy = nast1.y - sokoban.tilemapLocation().y
     for (let index = 0; index < petla; index++) {
-        sokoban.x += dx / petla
-        sokoban.y += dy / petla
+        mySprite.x += dx / petla
+        mySprite.y += dy / petla
         pause(80 / petla)
     }
 }
@@ -44,6 +109,7 @@ let nast2: tiles.Location = null
 let nast1: tiles.Location = null
 let skrzynka: Sprite = null
 let sokoban: Sprite = null
+info.setScore(0)
 tiles.setCurrentTilemap(tilemap`level1`)
 sokoban = sprites.create(img`
     . . . . . . f f f f . . . . . . 
