@@ -22,7 +22,7 @@ function doKasujSprajty () {
 }
 function doUstawMape (level: number) {
     doKasujSprajty()
-    if (level == 4) {
+    if (level == 6) {
         tiles.setCurrentTilemap(tilemap`level0`)
     } else if (level == 0) {
         tiles.setCurrentTilemap(tilemap`level4`)
@@ -32,6 +32,10 @@ function doUstawMape (level: number) {
         tiles.setCurrentTilemap(tilemap`level`)
     } else if (level == 3) {
         tiles.setCurrentTilemap(tilemap`level7`)
+    } else if (level == 4) {
+        tiles.setCurrentTilemap(tilemap`level8`)
+    } else if (level == 5) {
+        tiles.setCurrentTilemap(tilemap`level9`)
     } else {
     	
     }
@@ -198,7 +202,7 @@ let sokoban: Sprite = null
 let nast1: tiles.Location = null
 let maxLevel = 0
 let level = 0
-level = 3
+level = 5
 info.setScore(0)
 doUstawMape(level)
 maxLevel = 1
