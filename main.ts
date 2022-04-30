@@ -1,6 +1,16 @@
 namespace SpriteKind {
     export const skrzynki = SpriteKind.create()
 }
+function isCzyKoniecLevela () {
+    for (let value of sprites.allOfKind(SpriteKind.skrzynki)) {
+        if (value.tileKindAt(TileDirection.Center, sprites.castle.tileGrass2)) {
+        	
+        } else {
+            return false
+        }
+    }
+    return true
+}
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     nast1 = sokoban.tilemapLocation().getNeighboringLocation(CollisionDirection.Top)
     nast2 = nast1.getNeighboringLocation(CollisionDirection.Top)
@@ -12,10 +22,16 @@ function doKasujSprajty () {
 }
 function doUstawMape (level: number) {
     doKasujSprajty()
-    if (level == 1) {
+    if (level == 4) {
         tiles.setCurrentTilemap(tilemap`level0`)
     } else if (level == 0) {
         tiles.setCurrentTilemap(tilemap`level4`)
+    } else if (level == 1) {
+        tiles.setCurrentTilemap(tilemap`level6`)
+    } else if (level == 2) {
+        tiles.setCurrentTilemap(tilemap`level`)
+    } else if (level == 3) {
+        tiles.setCurrentTilemap(tilemap`level7`)
     } else {
     	
     }
@@ -70,6 +86,15 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.skrzynki, function (sprite, othe
             b b b b b b b b b b b b b b b b 
             . b b . . . . . . . . . . b b . 
             `)
+        if (isCzyKoniecLevela()) {
+            music.magicWand.play()
+            game.splash("Brawo! Szykuj się")
+            level += 1
+            if (level > maxLevel) {
+                game.over(true)
+            }
+            doUstawMape(level)
+        }
     } else {
         otherSprite.setImage(img`
             . . b b b b b b b b b b b b . . 
@@ -118,6 +143,7 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     doKroczek()
 })
 function doInicjujSprajty () {
+    info.setScore(0)
     sokoban = sprites.create(img`
         . . . . . . f f f f . . . . . . 
         . . . . f f f 2 2 f f f . . . . 
@@ -170,7 +196,9 @@ let petla = 0
 let nast2: tiles.Location = null
 let sokoban: Sprite = null
 let nast1: tiles.Location = null
+let maxLevel = 0
 let level = 0
-level = 0
+level = 3
 info.setScore(0)
 doUstawMape(level)
+maxLevel = 1
