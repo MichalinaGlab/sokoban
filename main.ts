@@ -22,7 +22,7 @@ function doKasujSprajty () {
 }
 function doUstawMape (level: number) {
     doKasujSprajty()
-    if (level == 6) {
+    if (level == 7) {
         tiles.setCurrentTilemap(tilemap`level0`)
     } else if (level == 0) {
         tiles.setCurrentTilemap(tilemap`level4`)
@@ -36,6 +36,8 @@ function doUstawMape (level: number) {
         tiles.setCurrentTilemap(tilemap`level8`)
     } else if (level == 5) {
         tiles.setCurrentTilemap(tilemap`level9`)
+    } else if (level == 6) {
+        tiles.setCurrentTilemap(tilemap`level10`)
     } else {
     	
     }
@@ -205,4 +207,4 @@ let level = 0
 level = 5
 info.setScore(0)
 doUstawMape(level)
-maxLevel = 1
+maxLevel = 5
